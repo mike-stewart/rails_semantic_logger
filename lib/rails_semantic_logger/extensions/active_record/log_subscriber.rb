@@ -26,10 +26,18 @@ module ActiveRecord
             attr_name, value = render_bind(attr)
             binds[attr_name] = value
           end
-        else
+        elsif Rails.version.to_i >= 4
           payload[:binds].each do |col, v|
             attr_name, value = render_bind(col, v)
             binds[attr_name] = value
+          end
+        else
+          payload[:binds].each do |col,v|
+            if col
+              binds[col.name] = v
+            else
+              binds[nil] = v
+            end
           end
         end
       end
